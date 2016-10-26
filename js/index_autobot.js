@@ -59,7 +59,6 @@ var messages = j('.messages-content'), d, i = 0, msg = "", botmsg = "";
 				var correctEle = j('.messages-content').find('#mCSB_2_container');
 				j('<div class="message loading new"><figure class="avatar"><img src="icon.png" /></figure><span></span></div>').appendTo(correctEle);
 				setTyping();
-				j('.message-input').prop('disabled',false);
 				updateScrollbar();
 				setTimeout(function(){ 
 					PostMessage();
@@ -73,7 +72,6 @@ var messages = j('.messages-content'), d, i = 0, msg = "", botmsg = "";
 				var correctEle = j('.messages-content').find('#mCSB_2_container');
 				j('<div class="message loading new"><figure class="avatar"><img src="icon.png" /></figure><span></span></div>').appendTo(correctEle);
 				setTyping();
-				j('.message-input').prop('disabled',false);
 				updateScrollbar();
 			},500);
 			setTimeout(function(){ 
@@ -139,25 +137,24 @@ var messages = j('.messages-content'), d, i = 0, msg = "", botmsg = "";
 			},
 			url: 'https://directline.botframework.com/api/conversations/'+$scope.conversationId+'/messages',
 		}).success(function(response){
-			// getNextID(response["messages"], true);
-
-			console.log(response["messages"]);
-			for (var j = lastTemp + 1; j < (response["messages"].length); j++){
-				botMessage(response["messages"][j],false);
+			for (var k = lastTemp + 1; k < (response["messages"].length); k++){
+				botMessage(response["messages"][k],false);
 			}
 			lastTemp = response["messages"].length;
 			if ($scope.fromBot === undefined) { $scope.fromBot = response["messages"][0]["from"]; } 
+			j('.message-input').prop('disabled',false);
 		});
 	}
 	
 	$scope.submit = function() {	
-		insertMessage(j('.message-input').val());
 		if ($scope.name) {
+			insertMessage(j('.message-input').val());
 			$rootScope.GetConversationId();
 		}
 	}
 	
 	j(window).load(function () {
+		// j('#mCSB_1_container').mCustomScrollbar();
 		j('.md-virtual-repeat-scroller').mCustomScrollbar();
 		messages.mCustomScrollbar();
 		$rootScope.GetConversationId();
@@ -200,7 +197,6 @@ var messages = j('.messages-content'), d, i = 0, msg = "", botmsg = "";
 			$rootScope.default_input = true;
 			$rootScope.car_model_input = false;	
 		}
-		
 		// j('#details').append("CarModel"+carModel+"carCost"+carCost+"carRegNo"+carRegNo+"DoP"+dop);
 		$scope.test(actualOptions);
 		playSound('bing');
@@ -236,11 +232,18 @@ var messages = j('.messages-content'), d, i = 0, msg = "", botmsg = "";
 	}
 
 	$scope.optionClick = function(value){
+		// var el = angular.element(".message.new .button");
+		// el.attr('ng-disabled', true);
+		// $compile(el.contents())($scope);
+		// $scope.disableButton = true;
+		j('.button').off("click");
 		var choice_value = value.split(".")[0];
 		$scope.name = choice_value;
+		 
 		setTimeout(function(){ 
 			$scope.submit();
 		}, 10);
+
 	}
 	
 	function playSound(filename) {
@@ -2397,9 +2400,3 @@ app.controller('ChatTitleCtrl', ['$scope', function ($scope) {
 		e.style.display = "block";
 	};
 }]);
-
-function escapify(str){
-	var temp = str.replace("'", "\'");
-	var temp2 = temp.replace('"', '\"');
-	return temp2;
-}
